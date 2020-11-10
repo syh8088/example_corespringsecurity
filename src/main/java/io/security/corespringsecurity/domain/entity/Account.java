@@ -1,17 +1,23 @@
 package io.security.corespringsecurity.domain.entity;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "z_test_security_account")
+//@ToString(exclude = {"userRoles"})
+@Builder
+//@EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
     private String username;
 
@@ -27,4 +33,8 @@ public class Account {
     @Column
     private String role;
 
+    /*@ManyToMany(fetch = FetchType.LAZY, cascade={CascadeType.ALL})
+    @JoinTable(name = "z_test_security_account_roles", joinColumns = { @JoinColumn(name = "account_id") }, inverseJoinColumns = {
+            @JoinColumn(name = "role_id") })
+    private Set<Role> userRoles = new HashSet<>();*/
 }

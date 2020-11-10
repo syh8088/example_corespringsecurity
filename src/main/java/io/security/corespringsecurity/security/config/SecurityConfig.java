@@ -1,14 +1,21 @@
 package io.security.corespringsecurity.security.config;
 
 import io.security.corespringsecurity.security.common.FormAuthenticationDetailsSource;
+import io.security.corespringsecurity.security.factory.UrlResourcesMapFactoryBean;
 import io.security.corespringsecurity.security.handler.FormAccessDeniedHandler;
+import io.security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.corespringsecurity.security.provider.FormAuthenticationProvider;
+import io.security.corespringsecurity.service.SecurityResourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,8 +27,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private FormAuthenticationDetailsSource formAuthenticationDetailsSource;
+
+    @Autowired
+    private SecurityResourceService securityResourceService;
 
 /*    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -81,10 +96,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
+                .antMatchers("/**").permitAll()
+                /*.antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
                 .antMatchers("/mypage").hasRole("USER")
                 .antMatchers("/messages").hasRole("MANAGER")
-                .antMatchers("/config").hasRole("ADMIN")
+                .antMatchers("/config").hasRole("ADMIN")*/
                 .anyRequest().authenticated()
         .and()
                 .formLogin()
@@ -98,6 +114,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler())
+        .and()
+                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
         ;
 
     }
@@ -111,4 +129,44 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Bean
+    public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+
+        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+
+        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
+        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean());
+
+        return filterSecurityInterceptor;
+    }
+
+    private AccessDecisionManager affirmativeBased() {
+        AffirmativeBased affirmativeBased = new AffirmativeBased(getAccessDecisionVoters());
+        return affirmativeBased;
+    }
+
+    private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
+
+        return Arrays.asList(new RoleVoter());
+
+/*        List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
+//        accessDecisionVoters.add(new IpAddressVoter(securityResourceService));
+        accessDecisionVoters.add(roleVoter());
+
+        return accessDecisionVoters;*/
+    }
+
+    @Bean
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject(), securityResourceService);
+    }
+
+    private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+
+        UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean();
+        urlResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
+
+        return urlResourcesMapFactoryBean;
+    }
 }

@@ -2,6 +2,7 @@ package io.security.corespringsecurity.controller.login;
 
 
 import io.security.corespringsecurity.domain.entity.Account;
+import io.security.corespringsecurity.security.token.AjaxAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,7 +34,7 @@ public class LoginController {
 	public String logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null){
+		if (authentication != null) {
 			new SecurityContextLogoutHandler().logout(request, response, authentication);
 		}
 
@@ -48,10 +49,9 @@ public class LoginController {
 		if (principal instanceof UsernamePasswordAuthenticationToken) {
 			account = (Account) ((UsernamePasswordAuthenticationToken) principal).getPrincipal();
 
-		}
-		//else if(principal instanceof AjaxAuthenticationToken) {
-		//	account = (Account) ((AjaxAuthenticationToken) principal).getPrincipal();
-		// }
+		} else if (principal instanceof AjaxAuthenticationToken) {
+			account = (Account) ((AjaxAuthenticationToken) principal).getPrincipal();
+		 }
 
 		model.addAttribute("username", account.getUsername());
 		model.addAttribute("exception", exception);
