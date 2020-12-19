@@ -1,6 +1,11 @@
 package io.security.corespringsecurity.controller.admin;
 
 
+import io.security.corespringsecurity.domain.dto.AccountDto;
+import io.security.corespringsecurity.domain.entity.Account;
+import io.security.corespringsecurity.domain.entity.Role;
+import io.security.corespringsecurity.service.RoleService;
+import io.security.corespringsecurity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +17,8 @@ import java.util.List;
 
 @Controller
 public class UserManagerController {
-	
-/*	@Autowired
+
+	@Autowired
 	private UserService userService;
 
 	@Autowired
@@ -54,5 +59,5 @@ public class UserManagerController {
 		userService.deleteUser(id);
 
 		return "redirect:/admin/users";
-	}*/
+	}
 }

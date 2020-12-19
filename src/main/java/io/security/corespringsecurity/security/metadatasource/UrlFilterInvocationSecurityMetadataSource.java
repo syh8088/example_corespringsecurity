@@ -6,11 +6,13 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Slf4j
+@Component
 public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
     private LinkedHashMap<RequestMatcher, List<ConfigAttribute>> requestMap = new LinkedHashMap<>();
@@ -31,7 +33,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
 
                 RequestMatcher matcher = entry.getKey();
 
-                if(matcher.matches(request)){
+                if (matcher.matches(request)) {
                     return entry.getValue();
                 }
             }
@@ -55,5 +57,18 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
     @Override
     public boolean supports(Class<?> aClass) {
         return FilterInvocation.class.isAssignableFrom(aClass);
+    }
+
+    public void reload() {
+
+        LinkedHashMap<RequestMatcher, List<ConfigAttribute>> reloadedMap = securityResourceService.getResourceList();
+        Iterator<Map.Entry<RequestMatcher, List<ConfigAttribute>>> iterator = reloadedMap.entrySet().iterator();
+
+        requestMap.clear();
+
+        while (iterator.hasNext()) {
+            Map.Entry<RequestMatcher, List<ConfigAttribute>> entry = iterator.next();
+            requestMap.put(entry.getKey(), entry.getValue());
+        }
     }
 }

@@ -20,7 +20,7 @@ import java.util.Set;
 public class Role implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id")
     private Long id;
 
@@ -30,11 +30,11 @@ public class Role implements Serializable {
     @Column(name = "role_desc")
     private String roleDesc;
 
-/*    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roleSet")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roleSet")
     @OrderBy("ordernum desc")
     private Set<Resources> resourcesSet = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "userRoles")
-    private Set<Account> accounts = new HashSet<>();*/
+    private Set<Account> accounts = new HashSet<>();
 
 }

@@ -1,5 +1,8 @@
 package io.security.corespringsecurity.controller.admin;
 
+import io.security.corespringsecurity.domain.dto.RoleDto;
+import io.security.corespringsecurity.domain.entity.Role;
+import io.security.corespringsecurity.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,7 +16,7 @@ import java.util.List;
 @Controller
 public class RoleController {
 
-/*	@Autowired
+	@Autowired
 	private RoleService roleService;
 
 	@GetMapping(value="/admin/roles")
@@ -63,5 +66,5 @@ public class RoleController {
 		roleService.deleteRole(Long.valueOf(id));
 
 		return "redirect:/admin/resources";
-	}*/
+	}
 }

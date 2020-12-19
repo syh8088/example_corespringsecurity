@@ -14,10 +14,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class SetupDataLoader {
-        /*
-
-        implements ApplicationListener<ContextRefreshedEvent> {
+public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     private boolean alreadySetup = false;
 
@@ -30,14 +27,14 @@ public class SetupDataLoader {
     @Autowired
     private ResourcesRepository resourcesRepository;
 
-   // @Autowired
-   // private RoleHierarchyRepository roleHierarchyRepository;
+    @Autowired
+    private RoleHierarchyRepository roleHierarchyRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-   // @Autowired
-   // private AccessIpRepository accessIpRepository;
+    @Autowired
+    private AccessIpRepository accessIpRepository;
 
     private static AtomicInteger count = new AtomicInteger(0);
 
@@ -58,15 +55,15 @@ public class SetupDataLoader {
 
     private void setupSecurityResources() {
         Set<Role> roles = new HashSet<>();
-        Role adminRole = createRoleIfNotFound("ROLE_ADMIN", "관리자");
-        roles.add(adminRole);
-        createResourceIfNotFound("/admin/**", "", roles, "url");
-        createResourceIfNotFound("execution(public * io.security.corespringsecurity.aopsecurity.*Service.pointcut*(..))", "", roles, "pointcut");
-        createUserIfNotFound("admin", "admin@admin.com", "pass", roles);
-        Role managerRole = createRoleIfNotFound("ROLE_MANAGER", "매니저권한");
-        Role userRole = createRoleIfNotFound("ROLE_USER", "사용자권한");
-        createRoleHierarchyIfNotFound(managerRole, adminRole);
-        createRoleHierarchyIfNotFound(userRole, managerRole);
+        //Role adminRole = createRoleIfNotFound("ROLE_ADMIN", "관리자");
+        //roles.add(adminRole);
+        //createResourceIfNotFound("/admin/**", "", roles, "url");
+        //createResourceIfNotFound("execution(public * io.security.corespringsecurity.aopsecurity.*Service.pointcut*(..))", "", roles, "pointcut");
+        //createUserIfNotFound("admin", "admin@admin.com", "pass", roles);
+        //Role managerRole = createRoleIfNotFound("ROLE_MANAGER", "매니저권한");
+        //Role userRole = createRoleIfNotFound("ROLE_USER", "사용자권한");
+        //createRoleHierarchyIfNotFound(managerRole, adminRole);
+        //createRoleHierarchyIfNotFound(userRole, managerRole);
     }
 
     @Transactional
@@ -144,6 +141,6 @@ public class SetupDataLoader {
                     .build();
             accessIpRepository.save(accessIp);
         }
-    }*/
+    }
 
 }

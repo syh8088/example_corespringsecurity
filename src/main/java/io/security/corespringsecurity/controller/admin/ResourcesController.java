@@ -9,6 +9,14 @@ import io.security.corespringsecurity.security.metadatasource.UrlFilterInvocatio
 import io.security.corespringsecurity.service.MethodSecurityService;
 import io.security.corespringsecurity.service.ResourcesService;
 import io.security.corespringsecurity.service.RoleService;*/
+import io.security.corespringsecurity.domain.dto.ResourcesDto;
+import io.security.corespringsecurity.domain.entity.Resources;
+import io.security.corespringsecurity.domain.entity.Role;
+import io.security.corespringsecurity.repository.RoleRepository;
+import io.security.corespringsecurity.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
+import io.security.corespringsecurity.service.MethodSecurityService;
+import io.security.corespringsecurity.service.ResourcesService;
+import io.security.corespringsecurity.service.RoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,18 +31,19 @@ import java.util.Set;
 
 @Controller
 public class ResourcesController {
-	/*
-	@Autowired
-	private ResourcesService resourcesService;
 
-	@Autowired
-	private RoleRepository roleRepository;
 
-	@Autowired
-	private RoleService roleService;
+	//@Autowired
+	//private MethodSecurityService methodSecurityService;
 
-	@Autowired
-	private MethodSecurityService methodSecurityService;
+    @Autowired
+    private ResourcesService resourcesService;
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
 	@Autowired
 	private UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
@@ -60,10 +69,10 @@ public class ResourcesController {
 
 		resourcesService.createResources(resources);
 
-		if("url".equals(resourcesDto.getResourceType())){
+		if ("url".equals(resourcesDto.getResourceType())) {
 			filterInvocationSecurityMetadataSource.reload();
-		}else{
-			methodSecurityService.addMethodSecured(resourcesDto.getResourceName(),resourcesDto.getRoleName());
+		} else {
+		//	methodSecurityService.addMethodSecured(resourcesDto.getResourceName(),resourcesDto.getRoleName());
 		}
 
 		return "redirect:/admin/resources";
@@ -97,7 +106,7 @@ public class ResourcesController {
 
 		return "admin/resource/detail";
 	}
-
+/*
 	@GetMapping(value="/admin/resources/delete/{id}")
 	public String removeResources(@PathVariable String id, Model model) throws Exception {
 
